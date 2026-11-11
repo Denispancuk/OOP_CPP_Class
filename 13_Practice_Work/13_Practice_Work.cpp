@@ -32,7 +32,19 @@ public:
             head = newNode;
         }
     }
-    void DeleteFromHead() {}
+    void DeleteFromHead() {
+        if (IsEmpty())return;
+        if (head->next == nullptr)
+        {
+            delete head;
+            head = tail = nullptr;
+        }
+        else {
+            head = head->next;
+            delete head->prev;
+            head->prev = nullptr;
+        }
+    }
     void AddToTail(T value)
     {
 
@@ -59,6 +71,32 @@ public:
             delete tail->next;
             tail->next = nullptr;
         }
+
+    }
+    void AddToPos(int pos,T value) {
+        if (pos <= 0) {
+            cout << "Wrong position!" << endl;
+            return;
+        }
+        if (pos == 1) {
+            AddToHead(value);
+            return;
+        }
+        int j = 1;
+        bool find = false;
+        for (Node* i = head; i != pos; i = i->next)
+        {
+            if (j == pos)
+            {
+                find = true;
+                Node* newNode = new Node(i->prev, value,i->next);
+                i->prev->next = newNode;
+                i->next->prev = newNode;
+                return;
+            }
+            j++;
+        }
+        cout << "Not find pos!" << endl;
 
     }
     void Print() {
@@ -98,10 +136,7 @@ public:
     Train():model("None"), countVagons(0){}
     Train(string model,int countVagons = 0):model(model), countVagons(countVagons){}
     void Show() {
-        for (int i = 0; i < countVagons; i++)
-        {
             vagons.Print();
-        }
     }
     void AddVagonToHead(const Vagon& vagon) {
         vagons.AddToHead(vagon);
@@ -115,27 +150,29 @@ public:
         vagons.DeleteFromTail();
         if (countVagons > 0) countVagons--;
     }
+    void DeleteVagonToHead() {
+        vagons.DeleteFromHead();
+        if (countVagons > 0) countVagons--;
+    }
 
 };
 int main()
 {
     Train myTrain("Intercity+");
 
-    // Виправлено: тип вказано як Train::Vagon
     Train::Vagon v1;
     v1.NumberVagon = 1;
     v1.CountOfPlaces = 60;
     v1.CountOfPassanger = 45;
 
-    // Виправлено: тип вказано як Train::Vagon
     Train::Vagon v2 = { 2, 50, 50 };
 
-    // Додавання вагонів до поїзда
     myTrain.AddVagonToTail(v1);
-    myTrain.AddVagonToTail(v2);
-
-    // Перевірка виводу
+    myTrain.AddVagonToHead(v2);
+    cout << "First Show" << endl;
     myTrain.Show();
-
-    return 0;
+    myTrain.DeleteVagonToTail();
+    myTrain.DeleteVagonToHead();
+    cout << "Second Show" << endl;
+    myTrain.Show();
 }
