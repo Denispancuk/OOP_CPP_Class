@@ -1,178 +1,101 @@
 #include <iostream>
 using namespace std;
-template<typename T>
-class List {
-    struct Node {
-        Node* prev;
-        T value;
-        Node* next;
-        Node() :prev(nullptr), value(0), next(nullptr) {}
-        Node(Node* p, T v, Node* n) :prev(p), value(v), next(n) {}
 
-    };
-private:
-    Node* head;
-    Node* tail;
+struct PIB {
+    string FirstName;
+    string MiddleName;
+    string LastName;
 public:
-    List()
-    {
-        head = tail = nullptr;
-    }
-    bool IsEmpty() {
-        return (head == nullptr and tail == nullptr);
+    PIB() :FirstName("NoFirstName"), MiddleName("NoMiddleName"), LastName("NoLastName") {}
+    PIB(string FN, string MN, string LN) :FirstName(FN), MiddleName(MN), LastName(LN) {}
+
+    void ShowName() {
+        cout << "First name: " << FirstName << endl;
+        cout << "Middle name: " << MiddleName << endl;
+        cout << "Last name: " << LastName << endl;
     }
 
-    void AddToHead(T value) {
-        Node* newNode = new Node(nullptr, value, head);
-        if (IsEmpty()) {
-            head = tail = newNode;
-        }
-        else {
-            head->prev = newNode;
-            head = newNode;
-        }
-    }
-    void DeleteFromHead() {
-        if (IsEmpty())return;
-        if (head->next == nullptr)
-        {
-            delete head;
-            head = tail = nullptr;
-        }
-        else {
-            head = head->next;
-            delete head->prev;
-            head->prev = nullptr;
-        }
-    }
-    void AddToTail(T value)
-    {
+};
 
-        Node* newNode = new Node(tail, value, nullptr);
-        if (IsEmpty())
-        {
-            head = tail = newNode;
-        }
-        else {
-            tail->next = newNode;
-            tail = newNode;
-        }
+class Student {
+protected:
+    PIB name;
+    int group;
+    float AverageMark;
+    float AverageAttendance;
+public:
+    Student() :name(), group(-1), AverageMark(0), AverageAttendance(0) {}
+    Student(string FN, string MN, string LN, int g, float AM, float AA) :name(FN, MN, LN), group(g), AverageMark(AM), AverageAttendance(AA) {}
+    Student(PIB name, int g, float AM, float AA) :name(name), group(g), AverageMark(AM), AverageAttendance(AA) {}
 
+    void PrintInfo() {
+        name.ShowName();
+        cout << "Group: " << group << endl;
+        cout << "Average Mark: " << AverageMark << endl;
+        cout << "Average Attendance: " << AverageAttendance << endl;
     }
-    void DeleteFromTail() {
-        if (IsEmpty())return;
-        if (head->next == nullptr)
-        {
-            delete head;
-            head = tail = nullptr;
-        }
-        else {
-            tail = tail->prev;
-            delete tail->next;
-            tail->next = nullptr;
-        }
-
+    void ChangeAverageMark(float AverageMark) {
+        this->AverageMark = AverageMark;
     }
-    void AddToPos(int pos,T value) {
-        if (pos <= 0) {
-            cout << "Wrong position!" << endl;
-            return;
-        }
-        if (pos == 1) {
-            AddToHead(value);
-            return;
-        }
-        int j = 1;
-        bool find = false;
-        for (Node* i = head; i != pos; i = i->next)
-        {
-            if (j == pos)
-            {
-                find = true;
-                Node* newNode = new Node(i->prev, value,i->next);
-                i->prev->next = newNode;
-                i->next->prev = newNode;
-                return;
-            }
-            j++;
-        }
-        cout << "Not find pos!" << endl;
-
-    }
-    void Print() {
-        for (Node* i = head; i != nullptr; i = i->next)
-        {
-            cout << i->value;
-        }
-    }
-    ~List() {
-        Node* current = nullptr;
-        while (head != nullptr)
-        {
-            current = head;
-            head = head->next;
-            delete current;
-        }
+    void ChangeAverageAttendance(float AverageAttendance) {
+        this->AverageAttendance = AverageAttendance;
     }
 };
 
-class Train {
+
+
+
+class Aspirant :public Student
+{
+    string DisertationTopic;
+    int DisertationCountPages;
+    bool DisertationProgress;
 public:
-    struct Vagon {
-        int NumberVagon;
-        int CountOfPlaces;
-        int CountOfPassanger;
-        friend ostream& operator << (ostream& out, const Vagon& vagon)
+    Aspirant() :DisertationTopic("None"), DisertationCountPages(0), DisertationProgress(false), Student() {}
+    Aspirant(string DT, int DCP, bool DIS, PIB n, int g, float AM, float AA) :DisertationTopic(DT), DisertationCountPages(DCP), DisertationProgress(DIS), Student(n, g, AM, AA) {}
+    void Disertation(int CountPages) {
+        DisertationCountPages += CountPages;
+    }
+    void SecureDisertation() {
+        int Success = rand() % 101;
+        if (DisertationCountPages >= 500 and Success > 10)
         {
-            out << "Number Vagon: " << vagon.NumberVagon << "\nCount Of Places: " << vagon.CountOfPlaces << "\nCount Of Passanger: " << vagon.CountOfPassanger << endl << endl;
-            return out;
+            DisertationProgress = true;
         }
-    };
-private:
-    string model;
-    List<Vagon> vagons;
-    int countVagons;
+    }
+
+
+};
+
+class Passport {
+protected:
+    PIB Name;
+    string Citizenship;
+    char Gender;
+    string PlaceOfBitrh;
+    short IssuingAuthority;
 public:
-    Train():model("None"), countVagons(0){}
-    Train(string model,int countVagons = 0):model(model), countVagons(countVagons){}
-    void Show() {
-            vagons.Print();
+    Passport():Name(),Citizenship("None"),Gender('N'),PlaceOfBitrh("None"),IssuingAuthority(0) {}
+    Passport(string FN, string MN, string LN, string citizenship, char gender, string PlaceOFBirth, short IssuingAuthority) :Name(FN, MN, LN), Citizenship(citizenship), Gender(gender), PlaceOfBitrh(PlaceOFBirth), IssuingAuthority(IssuingAuthority) {}
+    Passport(PIB name,string citizenship,char gender,string PlaceOFBirth,short IssuingAuthority):Name(name),Citizenship(citizenship),Gender(gender),PlaceOfBitrh(PlaceOFBirth),IssuingAuthority(IssuingAuthority) {}
+    void PrintPassport() {
+        Name.ShowName();
+        cout << "Citizenship: " << Citizenship << endl;
+        cout << "Gender: " << Gender << endl;
+        cout << "PlaceOfBitrh: " << PlaceOfBitrh << endl;
+        cout << "IssuingAuthority: " << IssuingAuthority << endl;
+
     }
-    void AddVagonToHead(const Vagon& vagon) {
-        vagons.AddToHead(vagon);
-        countVagons++;
+    void ChangeCitizenship(string Citizenship) {
+        this->Citizenship = Citizenship;
     }
-    void AddVagonToTail(const Vagon& vagon) {
-        vagons.AddToTail(vagon);
-        countVagons++;
-    }
-    void DeleteVagonToTail() {
-        vagons.DeleteFromTail();
-        if (countVagons > 0) countVagons--;
-    }
-    void DeleteVagonToHead() {
-        vagons.DeleteFromHead();
-        if (countVagons > 0) countVagons--;
-    }
+};
+class ForeignPassport : public Passport {
 
 };
 int main()
 {
-    Train myTrain("Intercity+");
 
-    Train::Vagon v1;
-    v1.NumberVagon = 1;
-    v1.CountOfPlaces = 60;
-    v1.CountOfPassanger = 45;
+    srand(time(0));
 
-    Train::Vagon v2 = { 2, 50, 50 };
-
-    myTrain.AddVagonToTail(v1);
-    myTrain.AddVagonToHead(v2);
-    cout << "First Show" << endl;
-    myTrain.Show();
-    myTrain.DeleteVagonToTail();
-    myTrain.DeleteVagonToHead();
-    cout << "Second Show" << endl;
-    myTrain.Show();
 }
