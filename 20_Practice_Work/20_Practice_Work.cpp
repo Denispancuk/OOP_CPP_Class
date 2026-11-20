@@ -12,6 +12,7 @@ public:
 	{
 		if (size > 0)
 		{
+			this->size = size;
 			arr = new int[size];
 			topIndex = EMPTY;
 		}
